@@ -122,6 +122,39 @@ const FeatureTab = (
 
 export const Features = () => {
   const [selectedTab, setSelectedTab] = useState(0);
+
+  const backgroundPositionX = useMotionValue(tabs[0].backgroundPositionX);
+  const backgroundPositionY = useMotionValue(tabs[0].backgroundPositionY);
+  const backgroundSizeX = useMotionValue(tabs[0].backgroundSizeX);
+
+  const backgroundPosition = useMotionTemplate`${backgroundPositionX}% ${backgroundPositionY}%`;
+  const backgroundSize = useMotionTemplate`${backgroundSizeX}% auto`;
+
+  const handleSelectTab = (index: number) => {
+    setSelectedTab(index);
+
+    const animateOptions: ValueAnimationTransition = {
+      duration: 2,
+      ease: "easeInOut",
+    };
+
+    animate(
+      backgroundSizeX,
+      [backgroundSizeX.get(), 100, tabs[index].backgroundSizeX],
+      animateOptions
+    );
+    animate(
+      backgroundPositionX,
+      [backgroundPositionX.get(), 100, tabs[index].backgroundPositionX],
+      animateOptions
+    );
+    animate(
+      backgroundPositionY,
+      [backgroundPositionY.get(), 100, tabs[index].backgroundPositionY],
+      animateOptions
+    );
+  };
+
   return (
     <section className=" py-20 md:py-24">
       <div className=" container">
@@ -138,17 +171,19 @@ export const Features = () => {
               {...tab}
               key={tab.title}
               selected={selectedTab === tabindex}
-              onClick={() => setSelectedTab(tabindex)}
+              onClick={() => handleSelectTab(tabindex)}
             />
           ))}
         </div>
         <div className=" border border-white/20 mt-3 p-2.5 rounded-xl">
-          <div
+          <motion.div
             className=" aspect-video bg-cover border border-white/15 rounded-lg"
             style={{
+              backgroundPosition,
+              backgroundSize,
               backgroundImage: `url(${productImage.src})`,
             }}
-          ></div>
+          ></motion.div>
         </div>
       </div>
     </section>
