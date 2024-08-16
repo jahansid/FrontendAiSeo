@@ -1,6 +1,7 @@
 "use client";
-import { DotLottiePlayer } from "@dotlottie/react-player";
+import { DotLottieCommonPlayer, DotLottiePlayer } from "@dotlottie/react-player";
 import productImage from "@/assets/product-image.png";
+import { useRef } from "react";
 
 const tabs = [
   {
@@ -29,6 +30,34 @@ const tabs = [
   },
 ];
 
+const FeatureTab = (tab: (typeof tabs)[number]) => {
+  const dotLottieRef = useRef<DotLottieCommonPlayer>(null);
+  const handleTabHover = ()=>{
+    if(dotLottieRef.current === null) return;
+    dotLottieRef.current.seek(0);
+    dotLottieRef.current.play();
+
+  }
+  return (
+    <div onMouseEnter={handleTabHover} className=" border border-white/15 rounded-xl flex gap-2.5 p-2.5 items-center lg:flex-1">
+      <div className=" size-12 inline-flex justify-center items-center border border-white/15 rounded-lg">
+        <DotLottiePlayer
+          ref={dotLottieRef}
+          src={tab.icon}
+          className=" size-5"
+          autoplay
+        />
+      </div>
+      <div className="font-medium">{tab.title}</div>
+      {tab.isNew && (
+        <div className=" text-xs rounded-full px-2 py-0.5 text-black font-semibold bg-[#8c44ff]">
+          new
+        </div>
+      )}
+    </div>
+  );
+};
+
 export const Features = () => {
   return (
     <section className=" py-20 md:py-24">
@@ -42,20 +71,7 @@ export const Features = () => {
         </p>
         <div className="  mt-10 flex flex-col lg:flex-row gap-3 ">
           {tabs.map((tab) => (
-            <div
-              key={tab.title}
-              className=" border border-white/15 rounded-xl flex gap-2.5 p-2.5 items-center lg:flex-1"
-            >
-              <div className=" size-12 inline-flex justify-center items-center border border-white/15 rounded-lg">
-                <DotLottiePlayer src={tab.icon} className=" size-5" autoplay />
-              </div>
-              <div className="font-medium">{tab.title}</div>
-              {tab.isNew && (
-                <div className=" text-xs rounded-full px-2 py-0.5 text-black font-semibold bg-[#8c44ff]">
-                  new
-                </div>
-              )}
-            </div>
+            <FeatureTab {...tab} key={tab.title} />
           ))}
         </div>
         <div className=" border border-white/20 mt-3 p-2.5 rounded-xl">
